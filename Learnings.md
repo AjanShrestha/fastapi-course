@@ -26,3 +26,13 @@
             source ./venv/bin/activate
         ```
     - VSCode -> Select the interpreter
+
+2. Run command
+
+    - 
+        ```bash
+            uvicorn main:app
+        ```
+    - `main`: the file `main.py`(the Python "module")
+    - `app`: the object created inside of `main.py` with the line `app = FastAPI`
+    - `--reload`: makes the server restart after code changes. Only use for development.
