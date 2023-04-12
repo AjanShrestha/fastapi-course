@@ -35,3 +35,20 @@
    - `main`: the file `main.py`(the Python "module")
    - `app`: the object created inside of `main.py` with the line `app = FastAPI`
    - `--reload`: makes the server restart after code changes. Only use for development.
+
+3. Path Operation
+
+   - ```python
+       @app.get("/")
+       def root():
+           return {"message": "Hello World!"}
+     ```
+   - `app` => FastAPI
+   - `get` => HTTP Method
+   - `/` => Path
+   - `root` => Function that performs all the logic and returns data to the user
+
+4. Order of Execution
+
+   - FastAPI returns from the first matched path
+   - Therefore, order is important
