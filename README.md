@@ -1,6 +1,6 @@
 # fastapi-course
 
-Python Rest API Course using FastAPI - [Youtube-link](https://www.youtube.com/watch?v=0sOvCWFmrtA)
+Python Rest API Course using [FastAPI](https://fastapi.tiangolo.com/) - [Youtube-link](https://www.youtube.com/watch?v=0sOvCWFmrtA)
 
 ⭐️ **Course Contents**
 
