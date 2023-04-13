@@ -16,7 +16,7 @@ Python Rest API Course using [FastAPI](https://fastapi.tiangolo.com/) - [Youtube
 - 34:17 Install dependencies w/ pip
 - 36:21 Starting FastAPI
 - 39:23 Path Operations
-- 53:22 Intro toman
+- 53:22 Intro to Postman
 - 57:34 HTTP Requests
 - 1:07:29 Schema Validation with Pydantic
 - 1:22:45 CRUD Operations
