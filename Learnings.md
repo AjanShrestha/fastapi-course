@@ -98,3 +98,9 @@
 - Standard convention
   - Use plural
   - Above url format
+
+7. Documentation
+
+- FastAPI auto generates documentation. There are two ways to generate documentation.
+  1. `<API_URL>/docs` via `Swagger`
+  2. `<API_URL>/redoc` via `Redocly`
