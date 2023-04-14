@@ -45,7 +45,7 @@ def get_posts():
     ]
 
 
-@app.post("/createposts")
+@app.post("/posts")
 # extract all the params from the request body,
 # convert it into python dictionarym, and
 # store it inside variable paylopad
