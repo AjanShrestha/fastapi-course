@@ -52,3 +52,13 @@
 
    - FastAPI returns from the first matched path
    - Therefore, order is important
+  
+5. Schema
+
+  - Explicitly define what the data should look like(a contract)
+  - Why do we need it?
+    - It's a pain to extract values from the body
+    - The client can send whatever data they want
+    - The data isn't getting validated
+    - We ultimately want to force the client to send data in a schema that we expect
+  - [`Pydantic`](https://docs.pydantic.dev/) to define schema
