@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.params import Body
 
 app = FastAPI()
 
@@ -33,3 +34,12 @@ def get_posts():
             "body": "This is post 3",
         },
     ]
+
+
+@app.post("/createposts")
+# extract all the params from the request body,
+# convert it into python dictionarym, and
+# store it inside variable paylopad
+def create_posts(payload: dict = Body(...)):
+    print(payload)
+    return {"new_post": f"title: {payload['title']} content: {payload['content']}"}
