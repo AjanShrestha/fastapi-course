@@ -13,6 +13,13 @@ class Post(BaseModel):
     rating: Optional[int] = None
 
 
+# In-memory storage for posts
+my_posts = [
+    {"title": "Sample Post", "content": "This is post 1", "id": 1},
+    {"title": "Favorite food", "content": "Momo", "id": 2},
+]
+
+
 # Path Operation / Route
 # Decorator converts the function into a path operation
 # Makes it an API that can be called
@@ -26,23 +33,7 @@ def root():
 
 @app.get("/posts")
 def get_posts():
-    return [
-        {
-            "id": 1,
-            "title": "Post 1",
-            "body": "This is post 1",
-        },
-        {
-            "id": 2,
-            "title": "Post 2",
-            "body": "This is post 2",
-        },
-        {
-            "id": 3,
-            "title": "Post 3",
-            "body": "This is post 3",
-        },
-    ]
+    return my_posts
 
 
 @app.post("/posts")
