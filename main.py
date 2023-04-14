@@ -21,6 +21,13 @@ my_posts = [
 ]
 
 
+def find_post(id: int):
+    for post in my_posts:
+        if post["id"] == id:
+            return post
+    return None
+
+
 # Path Operation / Route
 # Decorator converts the function into a path operation
 # Makes it an API that can be called
@@ -47,3 +54,11 @@ def create_posts(post: Post):
     post_dict["id"] = randrange(1, 9999999)
     my_posts.append(post_dict)
     return {"data": post_dict}
+
+
+# path parameter
+@app.get("/posts/{id}")
+# convert the id into int as default type is string
+def get_post(id: int):
+    post = find_post(id)
+    return {"post_detail": post}
