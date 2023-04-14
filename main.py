@@ -44,7 +44,7 @@ def get_posts():
     return my_posts
 
 
-@app.post("/posts")
+@app.post("/posts", status_code=status.HTTP_201_CREATED)
 # extract all the params from the request body,
 # convert it into python dictionarym, and
 # store it inside variable paylopad
