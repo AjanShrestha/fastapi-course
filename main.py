@@ -2,6 +2,7 @@ from typing import Optional
 from fastapi import FastAPI
 from fastapi.params import Body
 from pydantic import BaseModel
+from random import randrange
 
 app = FastAPI()
 
@@ -41,7 +42,8 @@ def get_posts():
 # convert it into python dictionarym, and
 # store it inside variable paylopad
 def create_posts(post: Post):
-    print(post)
     # Pydantic model to Python dict
-    print(post.dict())
-    return {"data": "new post"}
+    post_dict = post.dict()
+    post_dict["id"] = randrange(1, 9999999)
+    my_posts.append(post_dict)
+    return {"data": post_dict}
