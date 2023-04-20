@@ -104,3 +104,54 @@
    - FastAPI auto generates documentation. There are two ways to generate documentation.
      1. `<API_URL>/docs` via `Swagger`
      2. `<API_URL>/redoc` via `Redocly`
+
+8. Database
+
+   - Database is a collection of organized data that can be easily accessed and managed
+   - DBMS
+     - Database management system
+     - We don't work or interact with the database directly
+     - Pattern(Abstraction) => High level API rather than low level API
+     - Popular DBMS
+       - Relational
+         - MySQL
+         - PostgreSQL
+         - Oracle
+         - SQL Server
+       - NoSQL
+         - MongoDB
+         - DynamoDB
+         - Oracle
+         - SQL Server
+   - Relational Database & SQL
+     - Structured Query Language(SQL) - Language used to communicated with DBMS
+   - Postgres
+     - Fact: Each instance of postgres can be carved into multiple separate databases(can achieve isolation)
+     - By default "postgres" database is present on installation
+       - This is required because if we need to connect to a Postgres instance, then a database is required
+   - Table
+     - A table represents a subject or an event in an application
+     - The perform a relationship with other tables in the database
+     - Important to map out the relationship before creating the database
+     - A table is made up of columns and rows
+       - Columns vs Rows
+         - Each column represents a different attribute
+         - Each row represents a different entity in the table
+       - Postgres Datatype
+         - Need to specify Datatypes for each column
+         - | Datatype | Postgres               | Python     |
+           | -------- | ---------------------- | ---------- |
+           | Numeric  | Int, Decimal Precision | Int, Float |
+           | Text     | Varchar, text          | string     |
+           | bool     | boolean                | boolean    |
+           | sequence | array                  | list       |
+       - Primary Key
+         - Is a column or a group of columns that uniquely identifies each row in a table
+         - Table can have one and only one primary key
+       - Constraints
+         - A constraint can be applied to any column
+         - Unique constriants
+           - makes sure every record has a unique value for that column
+         - Null Constraints
+           - By default, when adding a new entry to the database, any column can be left blank. When a column is left blank, it has a null value.
+           - If you need column to be properly filled in to create a new record, a NOT NULL constraint can be added to the column to ensure is never left blank
