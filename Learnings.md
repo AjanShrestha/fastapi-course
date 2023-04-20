@@ -55,52 +55,52 @@
 
 5. Schema
 
-- Explicitly define what the data should look like(a contract)
-- Why do we need it?
-  - It's a pain to extract values from the body
-  - The client can send whatever data they want
-  - The data isn't getting validated
-  - We ultimately want to force the client to send data in a schema that we expect
-- [`Pydantic`](https://docs.pydantic.dev/) to define schema
+   - Explicitly define what the data should look like(a contract)
+   - Why do we need it?
+     - It's a pain to extract values from the body
+     - The client can send whatever data they want
+     - The data isn't getting validated
+     - We ultimately want to force the client to send data in a schema that we expect
+   - [`Pydantic`](https://docs.pydantic.dev/) to define schema
 
 6. CRUD
 
-- Create
-  - `POST`
-  - `/posts`
-    ```python
-      @app.post("/posts")
-    ```
-- Read
-  - `GET`
-  - `/posts:id`
-    ```python
-      @app.get("/posts/{id}")
-    ```
-  - `/posts`
-    ```python
-      @app.get("/posts")
-    ```
-- Update
-  - `PUT/PATCH`
-  - `/posts/:id`
-    ```python
-      @app.put("/posts/{id}")
-    ```
-  - `PUT` => Have to send all the data
-  - `PATCH` => Can only send the updated data
-- Delete
-  - `DELETE`
-  - `/posts/:id`
-    ```python
-      @app.delete("/posts/{id}")
-    ```
-- Standard convention
-  - Use plural
-  - Above url format
+   - Create
+     - `POST`
+     - `/posts`
+       ```python
+         @app.post("/posts")
+       ```
+   - Read
+     - `GET`
+     - `/posts:id`
+       ```python
+         @app.get("/posts/{id}")
+       ```
+     - `/posts`
+       ```python
+         @app.get("/posts")
+       ```
+   - Update
+     - `PUT/PATCH`
+     - `/posts/:id`
+       ```python
+         @app.put("/posts/{id}")
+       ```
+     - `PUT` => Have to send all the data
+     - `PATCH` => Can only send the updated data
+   - Delete
+     - `DELETE`
+     - `/posts/:id`
+       ```python
+         @app.delete("/posts/{id}")
+       ```
+   - Standard convention
+     - Use plural
+     - Above url format
 
 7. Documentation
 
-- FastAPI auto generates documentation. There are two ways to generate documentation.
-  1. `<API_URL>/docs` via `Swagger`
-  2. `<API_URL>/redoc` via `Redocly`
+   - FastAPI auto generates documentation. There are two ways to generate documentation.
+     1. `<API_URL>/docs` via `Swagger`
+     2. `<API_URL>/redoc` via `Redocly`
