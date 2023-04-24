@@ -1,10 +1,11 @@
-import time
-
-import psycopg
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import Depends, FastAPI, Response, status, HTTPException
 from pydantic import BaseModel
-from psycopg.rows import dict_row
-from random import randrange
+from sqlalchemy.orm import Session
+
+from . import models
+from .database import engine, get_db
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -15,40 +16,19 @@ class Post(BaseModel):
     published: bool = True
 
 
-while True:
-    try:
-        conn = psycopg.connect(
-            "host=localhost dbname=fastapi user=postgres password=postgres",
-            row_factory=dict_row,
-        )
-        cursor = conn.cursor()
-        print("Database connection was successful")
-        break
-    except Exception as error:
-        print("Connection to database failed")
-        print("Error: %s" % error)
-        time.sleep(2)
-
-
-# In-memory storage for posts
-my_posts = [
-    {"title": "Sample Post", "content": "This is post 1", "id": 1},
-    {"title": "Favorite food", "content": "Momo", "id": 2},
-]
-
-
-def find_post(id: int):
-    for post in my_posts:
-        if post["id"] == id:
-            return post
-    return None
-
-
-def find_index_post(id: int):
-    for index, post in enumerate(my_posts):
-        if post["id"] == id:
-            return index
-    return None
+# while True:
+#     try:
+#         conn = psycopg.connect(
+#             "host=<hostname> dbname=<dbname> user=<username> password=<password>",
+#             row_factory=dict_row,
+#         )
+#         cursor = conn.cursor()
+#         print("Database connection was successful")
+#         break
+#     except Exception as error:
+#         print("Connection to database failed")
+#         print("Error: %s" % error)
+#         time.sleep(2)
 
 
 # Path Operation / Route
@@ -63,8 +43,10 @@ def root():
 
 
 @app.get("/posts")
-def get_posts():
-    posts = cursor.execute("""SELECT * FROM posts """).fetchall()
+def get_posts(db: Session = Depends(get_db)):
+    # posts = cursor.execute("""SELECT * FROM posts """).fetchall()
+
+    posts = db.query(models.Post).all()
     return {"data": posts}
 
 
@@ -72,23 +54,33 @@ def get_posts():
 # extract all the params from the request body,
 # convert it into python dictionarym, and
 # store it inside variable paylopad
-def create_posts(post: Post):
-    # parameterized and sanitize
-    # security: make it safe from SQL injection
-    new_post = cursor.execute(
-        """INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING *""",
-        (post.title, post.content, post.published),
-    ).fetchone()
-    # commit to save it in the database
-    conn.commit()
+def create_posts(post: Post, db: Session = Depends(get_db)):
+    # # parameterized and sanitize
+    # # security: make it safe from SQL injection
+    # new_post = cursor.execute(
+    #     """INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING *""",
+    #     (post.title, post.content, post.published),
+    # ).fetchone()
+    # # commit to save it in the database
+    # conn.commit()
+
+    new_post = models.Post(**post.dict())
+    db.add(new_post)
+    db.commit()
+    # we cannot set RETURNING in SQLAlchemy hence refresh with the updated id
+    db.refresh(new_post)
+
     return {"data": new_post}
 
 
 # path parameter
 @app.get("/posts/{id}")
 # convert the id into int as default type is string
-def get_post(id: int):
-    post = cursor.execute("""SELECT * FROM posts WHERE id=%s""", (str(id),)).fetchone()
+def get_post(id: int, db: Session = Depends(get_db)):
+    # post = cursor.execute("""SELECT * FROM posts WHERE id=%s""", (str(id),)).fetchone()
+
+    post = db.query(models.Post).filter(models.Post.id == id).first()
+
     if not post:
         raise (
             HTTPException(
@@ -96,37 +88,45 @@ def get_post(id: int):
                 detail=f"Post with id: {id} was not found",
             )
         )
+
     return {"post_detail": post}
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int):
-    deleted_post = cursor.execute(
-        """DELETE FROM posts WHERE id=%s RETURNING *""", (str(id),)
-    ).fetchone()
-    conn.commit()
+def delete_post(id: int, db: Session = Depends(get_db)):
+    # deleted_post = cursor.execute(
+    #     """DELETE FROM posts WHERE id=%s RETURNING *""", (str(id),)
+    # ).fetchone()
+    # conn.commit()
 
-    if deleted_post is None:
+    post = db.query(models.Post).filter(models.Post.id == id)
+
+    if post.first() is None:
         raise (
             HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Post with id: {id} was not found",
             )
         )
+
+    post.delete(synchronize_session=False)
+    db.commit()
 
     # Normally we don't return anything, on delete success
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @app.put("/posts/{id}")
-def update_post(id: int, post: Post):
-    updated_post = cursor.execute(
-        """UPDATE posts SET title=%s, content=%s, published=%s WHERE id=%s RETURNING *""",
-        (post.title, post.content, post.published, str(id)),
-    ).fetchone()
-    conn.commit()
+def update_post(id: int, post: Post, db: Session = Depends(get_db)):
+    # updated_post = cursor.execute(
+    #     """UPDATE posts SET title=%s, content=%s, published=%s WHERE id=%s RETURNING *""",
+    #     (post.title, post.content, post.published, str(id)),
+    # ).fetchone()
+    # conn.commit()
 
-    if updated_post is None:
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+
+    if post_query.first() is None:
         raise (
             HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -134,4 +134,13 @@ def update_post(id: int, post: Post):
             )
         )
 
-    return {"data": updated_post}
+    post_query.update(post.dict(), synchronize_session=False)
+    db.commit()
+
+    return {"data": post_query.first()}
+
+
+@app.get("/sqlalchemy")
+def test_db(db: Session = Depends(get_db)):
+    posts = db.query(models.Post).all()
+    return {"data": posts}
