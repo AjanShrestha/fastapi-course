@@ -32,7 +32,7 @@ def get_posts(db: Session = Depends(get_db)):
 # extract all the params from the request body,
 # convert it into python dictionarym, and
 # store it inside variable paylopad
-def create_posts(post: schemas.Post, db: Session = Depends(get_db)):
+def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db)):
     # # parameterized and sanitize
     # # security: make it safe from SQL injection
     # new_post = cursor.execute(
@@ -95,7 +95,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{id}")
-def update_post(id: int, post: schemas.Post, db: Session = Depends(get_db)):
+def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db)):
     # updated_post = cursor.execute(
     #     """UPDATE posts SET title=%s, content=%s, published=%s WHERE id=%s RETURNING *""",
     #     (post.title, post.content, post.published, str(id)),
@@ -116,9 +116,3 @@ def update_post(id: int, post: schemas.Post, db: Session = Depends(get_db)):
     db.commit()
 
     return {"data": post_query.first()}
-
-
-@app.get("/sqlalchemy")
-def test_db(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all()
-    return {"data": posts}
