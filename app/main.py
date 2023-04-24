@@ -25,7 +25,7 @@ def get_posts(db: Session = Depends(get_db)):
     # posts = cursor.execute("""SELECT * FROM posts """).fetchall()
 
     posts = db.query(models.Post).all()
-    return {"data": posts}
+    return posts
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
@@ -48,7 +48,7 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db)):
     # we cannot set RETURNING in SQLAlchemy hence refresh with the updated id
     db.refresh(new_post)
 
-    return {"data": new_post}
+    return new_post
 
 
 # path parameter
@@ -67,7 +67,7 @@ def get_post(id: int, db: Session = Depends(get_db)):
             )
         )
 
-    return {"post_detail": post}
+    return post
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -115,4 +115,4 @@ def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db)
     post_query.update(post.dict(), synchronize_session=False)
     db.commit()
 
-    return {"data": post_query.first()}
+    return post_query.first()
