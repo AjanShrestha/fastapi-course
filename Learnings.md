@@ -165,3 +165,12 @@
      - Queries can be made exclusively through python code.
    - ORMs understand language; they donot directly communicate with the database
    - ORMs utilize database driver to communicate with the database; e.g. here psycopg is used
+
+10. Pydantic vs ORM models
+
+    - Schema Models
+      - Schema/Pydantic models define the structure of a request & response
+      - The models ensures the body has the correct type and filled data as required
+    - ORM models
+      - Responsible for defining the columns of the database
+      - Is used to perform CRUD operations
