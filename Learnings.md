@@ -155,3 +155,13 @@
          - Null Constraints
            - By default, when adding a new entry to the database, any column can be left blank. When a column is left blank, it has a null value.
            - If you need column to be properly filled in to create a new record, a NOT NULL constraint can be added to the column to ensure is never left blank
+
+9. Object Relational Mapper(ORM)
+
+   - Layer of abstraction that sits between the database and us
+   - We can perform all database operations through traditional Python code. No more SQL!
+   - What can ORMs do?
+     - Instead of manually defining tables in postgres, we ca define our tables as python codes
+     - Queries can be made exclusively through python code.
+   - ORMs understand language; they donot directly communicate with the database
+   - ORMs utilize database driver to communicate with the database; e.g. here psycopg is used
