@@ -1,34 +1,12 @@
 from fastapi import Depends, FastAPI, Response, status, HTTPException
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from . import models
+from . import models, schemas
 from .database import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool = True
-
-
-# while True:
-#     try:
-#         conn = psycopg.connect(
-#             "host=<hostname> dbname=<dbname> user=<username> password=<password>",
-#             row_factory=dict_row,
-#         )
-#         cursor = conn.cursor()
-#         print("Database connection was successful")
-#         break
-#     except Exception as error:
-#         print("Connection to database failed")
-#         print("Error: %s" % error)
-#         time.sleep(2)
 
 
 # Path Operation / Route
@@ -54,7 +32,7 @@ def get_posts(db: Session = Depends(get_db)):
 # extract all the params from the request body,
 # convert it into python dictionarym, and
 # store it inside variable paylopad
-def create_posts(post: Post, db: Session = Depends(get_db)):
+def create_posts(post: schemas.Post, db: Session = Depends(get_db)):
     # # parameterized and sanitize
     # # security: make it safe from SQL injection
     # new_post = cursor.execute(
@@ -117,7 +95,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
 
 
 @app.put("/posts/{id}")
-def update_post(id: int, post: Post, db: Session = Depends(get_db)):
+def update_post(id: int, post: schemas.Post, db: Session = Depends(get_db)):
     # updated_post = cursor.execute(
     #     """UPDATE posts SET title=%s, content=%s, published=%s WHERE id=%s RETURNING *""",
     #     (post.title, post.content, post.published, str(id)),
