@@ -13,7 +13,7 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 @router.get("/", response_model=List[schemas.Post])
 def get_posts(
     db: Session = Depends(get_db),
-    user_id: int = Depends(oauth2.get_current_user),
+    current_user: models.User = Depends(oauth2.get_current_user),
 ):
     # posts = cursor.execute("""SELECT * FROM posts """).fetchall()
 
@@ -28,7 +28,7 @@ def get_posts(
 def create_posts(
     post: schemas.PostCreate,
     db: Session = Depends(get_db),
-    user_id: int = Depends(oauth2.get_current_user),
+    current_user: models.User = Depends(oauth2.get_current_user),
 ):
     # # parameterized and sanitize
     # # security: make it safe from SQL injection
@@ -39,7 +39,7 @@ def create_posts(
     # # commit to save it in the database
     # conn.commit()
 
-    print(user_id)
+    print(current_user.email)
     new_post = models.Post(**post.dict())
     db.add(new_post)
     db.commit()
@@ -55,7 +55,7 @@ def create_posts(
 def get_post(
     id: int,
     db: Session = Depends(get_db),
-    user_id: int = Depends(oauth2.get_current_user),
+    current_user: models.User = Depends(oauth2.get_current_user),
 ):
     # post = cursor.execute("""SELECT * FROM posts WHERE id=%s""", (str(id),)).fetchone()
 
@@ -76,7 +76,7 @@ def get_post(
 def delete_post(
     id: int,
     db: Session = Depends(get_db),
-    user_id: int = Depends(oauth2.get_current_user),
+    current_user: models.User = Depends(oauth2.get_current_user),
 ):
     # deleted_post = cursor.execute(
     #     """DELETE FROM posts WHERE id=%s RETURNING *""", (str(id),)
@@ -105,7 +105,7 @@ def update_post(
     id: int,
     post: schemas.PostCreate,
     db: Session = Depends(get_db),
-    user_id: int = Depends(oauth2.get_current_user),
+    current_user: models.User = Depends(oauth2.get_current_user),
 ):
     # updated_post = cursor.execute(
     #     """UPDATE posts SET title=%s, content=%s, published=%s WHERE id=%s RETURNING *""",
