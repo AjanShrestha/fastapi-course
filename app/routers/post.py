@@ -39,8 +39,7 @@ def create_posts(
     # # commit to save it in the database
     # conn.commit()
 
-    print(current_user.email)
-    new_post = models.Post(**post.dict())
+    new_post = models.Post(owner_id=current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
     # we cannot set RETURNING in SQLAlchemy hence refresh with the updated id
