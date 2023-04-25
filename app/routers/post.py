@@ -82,9 +82,10 @@ def delete_post(
     # ).fetchone()
     # conn.commit()
 
-    post = db.query(models.Post).filter(models.Post.id == id)
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
 
-    if post.first() is None:
+    if post is None:
         raise (
             HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -92,7 +93,15 @@ def delete_post(
             )
         )
 
-    post.delete(synchronize_session=False)
+    if post.owner_id != current_user.id:
+        raise (
+            HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Not authorized to perform requested action",
+            )
+        )
+
+    post_query.delete(synchronize_session=False)
     db.commit()
 
     # Normally we don't return anything, on delete success
@@ -102,7 +111,7 @@ def delete_post(
 @router.put("/{id}", response_model=schemas.Post)
 def update_post(
     id: int,
-    post: schemas.PostCreate,
+    updated_post: schemas.PostCreate,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(oauth2.get_current_user),
 ):
@@ -113,8 +122,9 @@ def update_post(
     # conn.commit()
 
     post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
 
-    if post_query.first() is None:
+    if post is None:
         raise (
             HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -122,7 +132,15 @@ def update_post(
             )
         )
 
-    post_query.update(post.dict(), synchronize_session=False)
+    if post.owner_id != current_user.id:
+        raise (
+            HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Not authorized to perform requested action",
+            )
+        )
+
+    post_query.update(updated_post.dict(), synchronize_session=False)
     db.commit()
 
     return post_query.first()
