@@ -3,6 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from .config import settings
+
 # while True:
 #     try:
 #         conn = psycopg.connect(
@@ -20,16 +22,9 @@ from sqlalchemy.orm import sessionmaker
 
 # connection string
 # SQLACHEMY_DATABASE_URL = (
-#     "<database>://<username>:<password>@<ip-address/hostname>/<database_name>"
+#     "<database>://<username>:<password>@<ip-address/hostname>:<port>/<database_name>"
 # )
-database = os.getenv("DATABASE")
-username = os.getenv("DB_USERNAME")
-password = os.getenv("DB_PASSWORD")
-hostname = os.getenv("DB_HOSTNAME")
-database_name = os.getenv("DB_NAME")
-SQLACHEMY_DATABASE_URL = "{0}://{1}:{2}@{3}/{4}".format(
-    database, username, password, hostname, database_name
-)
+SQLACHEMY_DATABASE_URL = f"{settings.database}://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 
 # engine - responsible for SQLAlchemy to connect to the database
 engine = create_engine(SQLACHEMY_DATABASE_URL)
