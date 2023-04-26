@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from sqlalchemy.orm import Session
 
 from . import models
-from .database import engine, get_db
+from .database import engine
 from .routers import auth, post, user
 
 models.Base.metadata.create_all(bind=engine)
