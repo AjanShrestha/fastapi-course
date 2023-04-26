@@ -155,6 +155,8 @@
          - Null Constraints
            - By default, when adding a new entry to the database, any column can be left blank. When a column is left blank, it has a null value.
            - If you need column to be properly filled in to create a new record, a NOT NULL constraint can be added to the column to ensure is never left blank
+       - Composite Key
+         - Primary key that spans multiple columns
 
 9. Object Relational Mapper(ORM)
 
