@@ -174,3 +174,8 @@
     - ORM models
       - Responsible for defining the columns of the database
       - Is used to perform CRUD operations
+
+11. Relational DB - Relationships
+
+    - Foreign key
+      - Column that identifies the relationship between tables
