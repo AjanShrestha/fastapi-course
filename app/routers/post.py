@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Response, status, HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 
@@ -10,7 +11,8 @@ from .. import models, schemas, oauth2
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-@router.get("/", response_model=List[schemas.Post])
+# @router.get("/", response_model=List[schemas.Post])
+@router.get("/", response_model=List[schemas.PostOut])
 def get_posts(
     search: Optional[str],
     db: Session = Depends(get_db),
@@ -23,8 +25,23 @@ def get_posts(
     # Retrieve posts for the logged in user
     # posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).all()
 
+    # Retrieve posts with vote counts
+    # SELECT posts.*, COUNT(votes.post_id) as votes FROM posts LEFT JOIN votes ON posts.id = votes.post_id WHERE posts.id=2 GROUP BY posts.id;
+
+    # posts = (
+    #     db.query(models.Post)
+    #     # what about case insensitive search?
+    #     .filter(models.Post.title.contains(search))
+    #     .limit(limit)
+    #     .offset(skip)
+    #     .all()
+    # )
+
+    # SQLAlchemy is default Left Inner Join
     posts = (
-        db.query(models.Post)
+        db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+        .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
+        .group_by(models.Post.id)
         # what about case insensitive search?
         .filter(models.Post.title.contains(search))
         .limit(limit)
@@ -63,7 +80,7 @@ def create_posts(
 
 
 # path parameter
-@router.get("/{id}", response_model=schemas.Post)
+@router.get("/{id}", response_model=schemas.PostOut)
 # convert the id into int as default type is string
 def get_post(
     id: int,
@@ -72,7 +89,15 @@ def get_post(
 ):
     # post = cursor.execute("""SELECT * FROM posts WHERE id=%s""", (str(id),)).fetchone()
 
-    post = db.query(models.Post).filter(models.Post.id == id).first()
+    # post = db.query(models.Post).filter(models.Post.id == id).first()
+
+    post = (
+        db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+        .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
+        .group_by(models.Post.id)
+        .filter(models.Post.id == id)
+        .first()
+    )
 
     if not post:
         raise (
