@@ -177,7 +177,7 @@
       - Responsible for defining the columns of the database
       - Is used to perform CRUD operations
 
-11. Relational DB - Relationships
+11. Relational DB
 
-    - Foreign key
+    - Relationships - Foreign key
       - Column that identifies the relationship between tables
