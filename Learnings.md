@@ -188,3 +188,9 @@
     - allow us to make incremental change to database schema and rollback changes to any point in time
     - `Alembic`
       - can automatically pull database models from Sqlalchemy and generate the proper tables
+
+13. CORS
+
+    - Cross Resource Origin Sharing(CORS)
+    - allows to make requests from a browser on one domain to a server on another domain
+    - By default our API will only allow browsers running on the same domain as our server to make requests to it
