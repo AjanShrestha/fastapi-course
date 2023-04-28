@@ -181,3 +181,10 @@
 
     - Relationships - Foreign key
       - Column that identifies the relationship between tables
+
+12. Database Migration
+
+    - git for database; make changes and rollback changes
+    - allow us to make incremental change to database schema and rollback changes to any point in time
+    - `Alembic`
+      - can automatically pull database models from Sqlalchemy and generate the proper tables
