@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -17,9 +18,6 @@ engine = create_engine(SQLACHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autoflush=False, bind=engine)
 
 
-Base.metadata.create_all(bind=engine)
-
-
 # Dependency
 def override_get_db():
     db = TestingSessionLocal()
@@ -31,17 +29,24 @@ def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
-client = TestClient(app)
+
+@pytest.fixture
+def client():
+    # run our code before we run our test
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    yield TestClient(app)
+    # run our code after our test finishes
 
 
-def test_root():
+def test_root(client):
     res = client.get("/")
     print(res.json().get("message"))
     assert res.status_code == 200
     assert res.json().get("message") == "Hello World!"
 
 
-def test_create_user():
+def test_create_user(client):
     res = client.post(
         "/users", json={"email": "newuser@xyz.com", "password": "password"}
     )
