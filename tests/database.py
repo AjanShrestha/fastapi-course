@@ -16,7 +16,7 @@ engine = create_engine(SQLACHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autoflush=False, bind=engine)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def session():
     # run our code before we run our test
     Base.metadata.drop_all(bind=engine)
