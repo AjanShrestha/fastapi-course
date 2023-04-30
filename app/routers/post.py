@@ -14,7 +14,7 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 # @router.get("/", response_model=List[schemas.Post])
 @router.get("/", response_model=List[schemas.PostOut])
 def get_posts(
-    search: Optional[str],
+    search: Optional[str] = "",
     db: Session = Depends(get_db),
     current_user: models.User = Depends(oauth2.get_current_user),
     limit: int = 10,
