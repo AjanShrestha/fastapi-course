@@ -1,0 +1,100 @@
+@http=http://
+@hostname = localhost
+@port=8000
+@host={{hostname}}:{{port}}
+@contentType= application/json
+@nonExistentId=1945
+
+### ✅ Health check
+GET {{http}}{{host}}
+
+### ✅ Get posts
+GET {{http}}{{host}}/posts
+
+### ❌  Invalid post
+POST {{http}}{{host}}/posts/
+Content-Type: {{contentType}}
+
+{
+    "title": "new Title"
+}
+
+### ❌ Not published
+POST {{http}}{{host}}/posts/
+Content-Type: {{contentType}}
+
+{
+    "title": "new Title",
+    "content": "post long weekend",
+    "published": false
+}
+
+### ✅ Create a post
+POST {{http}}{{host}}/posts/
+Content-Type: {{contentType}}
+
+{
+    "title": "new Title",
+    "content": "post long weekend"
+}
+
+### ❌ Incorrect rating
+POST {{http}}{{host}}/posts/
+Content-Type: {{contentType}}
+
+{
+    "title": "new Title",
+    "content": "post long weekend",
+    "rating": "four"
+}
+
+### ✅ Create post
+POST {{http}}{{host}}/posts/
+Content-Type: {{contentType}}
+
+{
+    "title": "new Title",
+    "content": "post long weekend",
+    "rating": 4
+}
+
+### ❌ Incorrect ID
+GET {{http}}{{host}}/posts/abc
+Content-Type: {{contentType}}
+
+### ❌ No post exist
+GET {{http}}{{host}}/posts/{{nonExistentId}}
+Content-Type: {{contentType}}
+
+### ✅ Get a post
+GET {{http}}{{host}}/posts/1
+Content-Type: {{contentType}}
+
+### ❌ No post to delete
+DELETE {{http}}{{host}}/posts/1945
+Content-Type: {{contentType}}
+
+### ✅ Delete a post
+DELETE {{http}}{{host}}/posts/1
+Content-Type: {{contentType}}
+
+### ❌ No post exist
+PUT {{http}}{{host}}/posts/{{nonExistentId}}
+Content-Type: {{contentType}}
+
+{
+    "title": "new Title",
+    "content": "post long weekend",
+    "rating": 4,
+    "id": {{nonExistentId}}
+}
+
+### ✅ Update a post
+PUT {{http}}{{host}}/posts/2
+Content-Type: {{contentType}}
+
+{
+    "title": "new Title",
+    "content": "post long weekend",
+    "rating": 5
+}
