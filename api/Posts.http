@@ -75,7 +75,7 @@ DELETE {{http}}{{host}}/posts/1945
 Content-Type: {{contentType}}
 
 ### ✅ Delete a post
-DELETE {{http}}{{host}}/posts/1
+DELETE {{http}}{{host}}/posts/4
 Content-Type: {{contentType}}
 
 ### ❌ No post exist
@@ -90,11 +90,11 @@ Content-Type: {{contentType}}
 }
 
 ### ✅ Update a post
-PUT {{http}}{{host}}/posts/2
+PUT {{http}}{{host}}/posts/3
 Content-Type: {{contentType}}
 
 {
-    "title": "new Title",
-    "content": "post long weekend",
+    "title": "new Title II",
+    "content": "post long weekend II",
     "rating": 5
 }
